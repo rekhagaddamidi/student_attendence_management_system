@@ -1,0 +1,25 @@
+require("dotenv").config();
+const path = require("path");
+const express = require("express");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const supabase = require("./supabase");
+const studentsRouter = require("./routes/students");
+const attendanceRouter = require("./routes/attendance");
+const reportsRouter = require("./routes/reports");
+const { notFound, errorHandler } = require("./middleware/errors");
+
+const app = express();
+app.disable("x-powered-by");
+app.use(helmet({contentSecurityPolicy:{directives:{"default-src":["'self'"],"script-src":["'self'"],"style-src":["'self'"],"img-src":["'self'","data:"],"connect-src":["'self'"],"upgrade-insecure-requests":null}}}));
+app.use(express.json({limit:"100kb"}));
+app.use(rateLimit({windowMs:15*60*1000,limit:300,standardHeaders:true,legacyHeaders:false}));
+app.get("/api/health", (req,res)=>res.json({status:"ok",databaseConfigured:Boolean(supabase)}));
+app.use("/api/students", (req,res,next)=>{if(!supabase)return res.status(503).json({error:"Database is not configured. Set up backend/.env and restart the server."});next()}, studentsRouter);
+app.use("/api/attendance", (req,res,next)=>{if(!supabase)return res.status(503).json({error:"Database is not configured. Set up backend/.env and restart the server."});next()}, attendanceRouter);
+app.use("/api/reports", (req,res,next)=>{if(!supabase)return res.status(503).json({error:"Database is not configured. Set up backend/.env and restart the server."});next()}, reportsRouter);
+app.use(express.static(path.join(__dirname,"..","frontend")));
+app.use("/api",notFound);
+app.use(errorHandler);
+const port=Number(process.env.PORT)||3000;
+app.listen(port,()=>console.log(`Student Attendance app running at http://localhost:${port}`));

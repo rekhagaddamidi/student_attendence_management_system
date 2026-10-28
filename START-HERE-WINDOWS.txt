@@ -1,0 +1,12 @@
+STUDENT ATTENDANCE MANAGEMENT SYSTEM - START HERE
+
+1. Extract this ZIP using Windows Extract All.
+2. The extracted folder should directly contain frontend, backend, database, README.md, and START-APP.bat.
+3. Install Node.js LTS from https://nodejs.org/ if needed.
+4. Create a Supabase project. In its SQL Editor, run all of database/schema.sql.
+5. Double-click START-APP.bat. It installs packages and creates backend/.env if missing.
+6. If Notepad opens, fill SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY using your own Supabase project settings, save, and close Notepad. Keep the secret key private.
+7. Double-click START-APP.bat again.
+8. When it says the app is running, open http://localhost:3000 in Chrome. Keep the black terminal window open.
+
+Without valid Supabase credentials and the database schema, the UI can open but cannot save student or attendance data.
